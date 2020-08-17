@@ -23,4 +23,4 @@ NGINX proxy app for recipe app deployment https://github.com/roylee0704/recipe-a
 
 ### Infrastructure?
 
-We not going to build any infrastructure for this repo, we only build and push to ECR repo.
+We not going to build any infrastructure for this repo, we only build docker image and push it to ECR repo.
