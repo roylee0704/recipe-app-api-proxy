@@ -19,3 +19,8 @@ NGINX proxy app for recipe app deployment https://github.com/roylee0704/recipe-a
 ### Policy
 
 * Limit user to push images to specific ECR repo.
+
+
+### Infrastructure?
+
+We not going to build any infrastructure for this repo, we only build and push to ECR repo.
