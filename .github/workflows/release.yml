@@ -5,8 +5,9 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "*"
 
 jobs:
   pushRelease:
@@ -31,10 +32,17 @@ jobs:
         with:
           name: data/image.tar
 
+      - name: Retrieve Commit Tag
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
       # trick: to pass values across processes, use export env
       - name: Tag and Push Docker Image (release)
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+
         run: |
-          export TAGGED_ECR_REPO = ${{ secrets.ECR_REPO }}:${{ github.event.release.tag_name }}
+          export TAGGED_ECR_REPO = ${{ secrets.ECR_REPO }}:$RELEASE_VERSION
           export LATEST_ECR_REPO = ${{ secrets.ECR_REPO }}:latest
           docker load --input data/image.tar
           docker tag proxy:latest $TAGGED_ECR_REPO
