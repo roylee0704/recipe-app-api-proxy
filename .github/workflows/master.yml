@@ -22,16 +22,15 @@ jobs:
       #  - a way to pass data from one job to another job to the next job
       - name: Build Docker image
         run: |
-          mkdir data/
           docker build -t proxy .
-          docker save --output data/image.tar proxy
+          docker save --output image.tar proxy
 
       # make this data file available for the next jobs
       - name: Upload artifact
         uses: actions/upload-artifact@v1
         with:
           name: image
-          path: data/
+          path: image.tar
 
   # https://gitlab.com/LondonAppDev/recipe-app-api-devops-course-material/snippets/1965273
   # https://github.com/eriktisme/recipe-app-api-proxy/blob/master/.github/workflows/continuous-integration.yml
@@ -56,11 +55,11 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v1
         with:
-          name: data/image.tar
+          name: image
 
       # open image named proxy:latest
       - name: Tag and Push Docker Image (dev)
         run: |
-          docker load --input data/image.tar
+          docker load --input image/image.tar
           docker tag proxy:latest ${{ secrets.ECR_REPO }}:dev
           docker push ${{ secrets.ECR_REPO }}:dev
