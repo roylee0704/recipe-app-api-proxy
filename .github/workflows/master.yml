@@ -38,7 +38,7 @@ jobs:
   pushDev:
     runs-on: ubuntu-latest
     needs: [build]
-    if: ${{ github.event_name === 'push' }}
+    if: ${{ github.event_name == 'push' }}
 
     steps:
       - uses: actions/checkout@v2
