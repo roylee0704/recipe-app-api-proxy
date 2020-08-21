@@ -64,10 +64,10 @@ jobs:
       - name: Tag and Push Docker Image (release)
         env:
           RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+          TAGGED_ECR_REPO: ${{ secrets.ECR_REPO }}:${{ steps.vars.outputs.tag }}
+          LATEST_ECR_REPO: ${{ secrets.ECR_REPO }}:latest
 
         run: |
-          export TAGGED_ECR_REPO = ${{ secrets.ECR_REPO }}:$RELEASE_VERSION
-          export LATEST_ECR_REPO = ${{ secrets.ECR_REPO }}:latest
           docker load --input image/image.tar
           docker tag proxy:latest $TAGGED_ECR_REPO
           docker push $TAGGED_ECR_REPO
