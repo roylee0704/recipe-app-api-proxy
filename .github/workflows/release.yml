@@ -10,6 +10,29 @@ on:
       - "*"
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # build image at current directory (root), and tag it with 'proxy'.
+      # save image on disk on the job
+      #
+      # why? to present this image as an artifact:
+      #  - a way to pass data from one job to another job to the next job
+      - name: Build Docker image
+        run: |
+          docker build -t proxy .
+          docker save --output image.tar proxy
+
+      # make this data file available for the next jobs
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: image
+          path: image.tar
+
   pushRelease:
     runs-on: ubuntu-latest
 
@@ -30,7 +53,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v1
         with:
-          name: data/image.tar
+          name: image
 
       - name: Retrieve Commit Tag
         id: vars
@@ -44,7 +67,7 @@ jobs:
         run: |
           export TAGGED_ECR_REPO = ${{ secrets.ECR_REPO }}:$RELEASE_VERSION
           export LATEST_ECR_REPO = ${{ secrets.ECR_REPO }}:latest
-          docker load --input data/image.tar
+          docker load --input image/image.tar
           docker tag proxy:latest $TAGGED_ECR_REPO
           docker push $TAGGED_ECR_REPO
           docker tag $TAGGED_ECR_REPO $LATEST_ECR_REPO
