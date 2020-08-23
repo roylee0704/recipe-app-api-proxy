@@ -63,4 +63,4 @@ USER nginx
 
 # default command to run Dockerfile that can run your application
 # inside your container
-CMD  ("/entrypoint.sh")
+CMD  ["/entrypoint.sh"]
